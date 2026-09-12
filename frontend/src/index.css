@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --bg-canvas: #F5F6FA;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #FFFFFF;
+  --primary: #4880FF;
+  --primary-hover: #386FE0;
+  --primary-light: #EBF2FF;
+  --text-main: #202224;
+  --text-muted: #7B809A;
+  --border-color: #ECEEF2;
+  --border-light: #F1F3F7;
+  
+  /* Semantic Status & Priority Colors */
+  --color-critical-bg: #FEECEB;
+  --color-critical-text: #EF3826;
+  --color-high-bg: #FFF2E5;
+  --color-high-text: #FF8E25;
+  --color-medium-bg: #FFF8E5;
+  --color-medium-text: #D97706;
+  --color-low-bg: #E6F7F5;
+  --color-low-text: #00B69B;
+  --color-info-bg: #EBF2FF;
+  --color-info-text: #4880FF;
+  --color-pending-bg: #F3F4F6;
+  --color-pending-text: #6B7280;
+  
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-card: 0 4px 20px 0 rgba(0, 0, 0, 0.04);
+  --shadow-hover: 0 8px 28px 0 rgba(72, 128, 255, 0.12);
+  --radius-sm: 8px;
+  --radius-card: 14px;
+  --radius-pill: 9999px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-canvas);
+  color: var(--text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* DashStack Card Pattern */
+.dash-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  transition: all 0.2s ease-in-out;
+}
+
+.dash-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* DashStack Soft-Pill Badges */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  text-transform: capitalize;
+  letter-spacing: 0.2px;
+}
+
+.badge-critical { background-color: var(--color-critical-bg); color: var(--color-critical-text); }
+.badge-high { background-color: var(--color-high-bg); color: var(--color-high-text); }
+.badge-medium { background-color: var(--color-medium-bg); color: var(--color-medium-text); }
+.badge-low { background-color: var(--color-low-bg); color: var(--color-low-text); }
+.badge-resolved { background-color: var(--color-low-bg); color: var(--color-low-text); }
+.badge-in_progress { background-color: var(--color-medium-bg); color: var(--color-medium-text); }
+.badge-acknowledged { background-color: var(--color-info-bg); color: var(--color-info-text); }
+.badge-pending { background-color: var(--color-pending-bg); color: var(--color-pending-text); }
+.badge-rejected { background-color: var(--color-critical-bg); color: var(--color-critical-text); }
+
+/* Buttons */
+.btn-primary {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 12px rgba(72, 128, 255, 0.3);
+}
+
+.btn-secondary {
+  background-color: #FFFFFF;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 9px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-canvas);
+  border-color: #D5D9E2;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Form Controls */
+.dash-input, .dash-select, .dash-textarea {
+  width: 100%;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text-main);
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.dash-input:focus, .dash-select:focus, .dash-textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(72, 128, 255, 0.15);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-canvas);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}

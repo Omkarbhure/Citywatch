@@ -1,0 +1,21 @@
+# Set the default behavior for all files.
+* text=auto
+
+# Always normalize these text files to LF on commit.
+*.js text
+*.ts text
+*.jsx text
+*.tsx text
+*.html text
+*.css text
+*.json text
+*.md text
+*.gitignore text
+
+# Explicitly declare binary files that should not be modified.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
