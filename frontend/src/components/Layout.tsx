@@ -7,6 +7,7 @@ import {
   PlusCircle,
   ShieldAlert,
   BarChart3,
+  User as UserIcon,
   LogOut,
   Menu
 } from 'lucide-react';
@@ -29,6 +30,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
     { label: 'Incidents Feed', path: '/incidents', Icon: ListFilter },
     { label: 'Live Geo-Map', path: '/map', Icon: MapIcon },
     { label: 'Report Incident', path: '/report', Icon: PlusCircle },
+    { label: 'My Profile', path: '/profile', Icon: UserIcon },
   ];
 
   const authorityItems = [
@@ -240,7 +242,8 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Right User & Role Info */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
             {user && (
-              <div
+              <Link
+                to="/profile"
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -249,12 +252,16 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                   backgroundColor: 'var(--bg-canvas)',
                   borderRadius: 'var(--radius-pill)',
                   border: '1px solid var(--border-color)',
+                  textDecoration: 'none',
+                  transition: 'all 0.15s ease',
+                  cursor: 'pointer',
                 }}
+                title="View and edit profile"
               >
                 <div
                   style={{
-                    width: '32px',
-                    height: '32px',
+                    width: '34px',
+                    height: '34px',
                     borderRadius: '50%',
                     backgroundColor: isAuthority ? '#8854D0' : 'var(--primary)',
                     color: '#FFFFFF',
@@ -263,9 +270,19 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     justifyContent: 'center',
                     fontSize: '14px',
                     fontWeight: 700,
+                    overflow: 'hidden',
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
                   }}
                 >
-                  {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
+                  {user.avatar ? (
+                    <img
+                      src={user.avatar}
+                      alt={user.name || 'User Avatar'}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    user.name ? user.name.charAt(0).toUpperCase() : 'U'
+                  )}
                 </div>
                 <div>
                   <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)', lineHeight: 1.2 }}>
@@ -278,7 +295,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {user.role}
                   </span>
                 </div>
-              </div>
+              </Link>
             )}
           </div>
         </header>

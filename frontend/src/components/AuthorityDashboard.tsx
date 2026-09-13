@@ -9,10 +9,12 @@ import {
   ThumbsUp,
   AlertTriangle,
   Radio,
-  UserCheck
+  UserCheck,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import useIncidentQueue, { QueueFilters } from '../hooks/useIncidentQueue';
+import useIncidents from '../hooks/useIncidents';
 import { getSocket } from '../lib/socket';
 import {
   Incident,
@@ -47,12 +49,25 @@ export const AuthorityDashboard: React.FC = () => {
     loading,
     error
   } = useIncidentQueue();
+  const { deleteIncident } = useIncidents();
 
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [liveBanner, setLiveBanner] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  const handleDelete = async (id: string, title: string) => {
+    if (window.confirm(`Are you sure you want to permanently remove "${title}"?`)) {
+      try {
+        await deleteIncident(id);
+        setIncidents((prev) => prev.filter((inc) => inc._id !== id));
+        setTotal((prev) => Math.max(0, prev - 1));
+      } catch (err: any) {
+        setActionError(err.message || 'Failed to remove incident');
+      }
+    }
+  };
 
   // Filters state
   const [filters, setFilters] = useState<QueueFilters>({
@@ -532,6 +547,24 @@ export const AuthorityDashboard: React.FC = () => {
                             Reassign
                           </button>
                         )}
+
+                        <button
+                          onClick={() => handleDelete(incident._id, incident.title)}
+                          style={{
+                            padding: '5px 10px',
+                            backgroundColor: 'var(--color-critical-bg)',
+                            color: 'var(--color-critical-text)',
+                            border: 'none',
+                            borderRadius: 'var(--radius-input)',
+                            cursor: 'pointer',
+                            fontSize: '12px',
+                            fontWeight: 700,
+                            marginLeft: '6px'
+                          }}
+                          title="Permanently remove incident from system"
+                        >
+                          <Trash2 size={13} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                        </button>
                       </td>
                     </tr>
                   );

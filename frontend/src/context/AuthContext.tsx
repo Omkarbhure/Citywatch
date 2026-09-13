@@ -7,6 +7,9 @@ interface User {
   name: string;
   email: string;
   role: 'citizen' | 'authority';
+  phone?: string;
+  address?: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
@@ -14,6 +17,7 @@ interface AuthContextType {
   token: string | null;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role?: string) => Promise<void>;
+  updateProfile: (data: { name?: string; phone?: string; address?: string; avatar?: string }) => Promise<User>;
   logout: () => void;
   loading: boolean;
 }
@@ -90,6 +94,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const updateProfile = async (data: { name?: string; phone?: string; address?: string; avatar?: string }) => {
+    try {
+      const response = await axios.put('/api/auth/profile', data);
+      setUser(response.data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to update profile');
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
@@ -101,6 +115,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     token,
     login,
     register,
+    updateProfile,
     logout,
     loading,
   };

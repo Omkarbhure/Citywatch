@@ -9,7 +9,8 @@ import {
   Zap,
   Tag,
   Radio,
-  CheckCircle2
+  CheckCircle2,
+  Trash2
 } from 'lucide-react';
 import useIncidents from '../hooks/useIncidents';
 import { useAuth } from '../context/AuthContext';
@@ -22,7 +23,7 @@ const IncidentFeed: React.FC = () => {
   const [liveBanner, setLiveBanner] = useState<string | null>(null);
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
   const { user } = useAuth();
-  const { getIncidents, upvoteIncident, loading, error } = useIncidents();
+  const { getIncidents, upvoteIncident, deleteIncident, loading, error } = useIncidents();
 
   const fetchFeed = async () => {
     try {
@@ -81,6 +82,12 @@ const IncidentFeed: React.FC = () => {
       setTimeout(() => setLiveBanner(null), 5000);
     };
 
+    const handleDeletedIncident = ({ incidentId }: { incidentId: string }) => {
+      setIncidents((prev) => prev.filter((inc) => inc._id !== incidentId));
+      setLiveBanner(`Incident was removed by authority`);
+      setTimeout(() => setLiveBanner(null), 5000);
+    };
+
     const handleUpvotedIncident = ({ incidentId, upvoteCount }: { incidentId: string; upvoteCount: number }) => {
       setIncidents((prev) =>
         prev.map((inc) => {
@@ -95,6 +102,7 @@ const IncidentFeed: React.FC = () => {
 
     socket.on('incident:new', handleNewIncident);
     socket.on('incident:updated', handleUpdatedIncident);
+    socket.on('incident:deleted', handleDeletedIncident);
     socket.on('incident:upvoted', handleUpvotedIncident);
 
     return () => {
@@ -103,9 +111,21 @@ const IncidentFeed: React.FC = () => {
       }
       socket.off('incident:new', handleNewIncident);
       socket.off('incident:updated', handleUpdatedIncident);
+      socket.off('incident:deleted', handleDeletedIncident);
       socket.off('incident:upvoted', handleUpvotedIncident);
     };
   }, [userCoords]);
+
+  const handleDelete = async (id: string, title: string) => {
+    if (window.confirm(`Are you sure you want to remove the incident "${title}" from the system?`)) {
+      try {
+        await deleteIncident(id);
+        setIncidents((prev) => prev.filter((inc) => inc._id !== id));
+      } catch (err: any) {
+        alert(err.message || 'Failed to delete incident');
+      }
+    }
+  };
 
   const handleUpvote = async (id: string) => {
     try {
@@ -282,6 +302,31 @@ const IncidentFeed: React.FC = () => {
                     <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600 }}>
                       {upvoteStatus[incident._id]}
                     </span>
+                  )}
+
+                  {user?.role === 'authority' && (
+                    <button
+                      onClick={() => handleDelete(incident._id, incident.title)}
+                      style={{
+                        marginLeft: 'auto',
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        backgroundColor: 'var(--color-critical-bg)',
+                        color: 'var(--color-critical-text)',
+                        border: 'none',
+                        borderRadius: 'var(--radius-input)',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease'
+                      }}
+                      title="Remove incident permanently (Authority Only)"
+                    >
+                      <Trash2 size={13} />
+                      <span>Remove</span>
+                    </button>
                   )}
                 </div>
               );

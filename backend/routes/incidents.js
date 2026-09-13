@@ -8,7 +8,8 @@ import {
   getIncidentQueue,
   assignIncident,
   unassignIncident,
-  updatePriority
+  updatePriority,
+  deleteIncident
 } from '../controllers/incidentController.js';
 import { protect } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
@@ -32,6 +33,7 @@ router.get('/queue', protect, requireRole('authority'), getIncidentQueue);
 router.get('/:id', protect, getIncidentById);
 router.patch('/:id/status', protect, requireRole('authority'), validate(updateStatusSchema), updateStatus);
 router.post('/:id/upvote', protect, upvoteIncident);
+router.delete('/:id', protect, requireRole('authority'), deleteIncident);
 
 // Authority assignment & priority management routes
 router.patch('/:id/assign', protect, requireRole('authority'), validate(assignIncidentSchema), assignIncident);

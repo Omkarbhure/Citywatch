@@ -293,4 +293,47 @@ describe('Incidents API Integration Tests (/api/incidents)', () => {
     expect(res.body.statusHistory[0].status).toBe('in_progress');
     expect(res.body.statusHistory[0].note).toBe('Repair team dispatched');
   });
+
+  it('INC-10: Authority user deletes an incident successfully and removes it from database', async () => {
+    const incident = await Incident.create({
+      reporter: citizenUser._id,
+      title: 'Obsolete Report',
+      description: 'To be deleted by authority',
+      category: 'other',
+      location: { type: 'Point', coordinates: [77.59, 12.97] },
+    });
+
+    const res = await request(app)
+      .delete(`/api/incidents/${incident._id}`)
+      .set('Authorization', `Bearer ${authorityToken}`)
+      .expect(200);
+
+    expect(res.body.message).toMatch(/deleted|removed/i);
+
+    // Assert incident is completely deleted from MongoDB
+    const deletedDoc = await Incident.findById(incident._id);
+    expect(deletedDoc).toBeNull();
+  });
+
+  it('INC-11 (RBAC Boundary): Citizen attempting to delete an incident receives 403 Forbidden', async () => {
+    const incident = await Incident.create({
+      reporter: citizenUser._id,
+      title: 'Protected Incident',
+      description: 'Cannot be deleted by citizen',
+      category: 'pothole',
+      location: { type: 'Point', coordinates: [77.59, 12.97] },
+    });
+
+    const res = await request(app)
+      .delete(`/api/incidents/${incident._id}`)
+      .set('Authorization', `Bearer ${citizenToken}`)
+      .expect(403);
+
+    expect(res.body.message).toMatch(/Forbidden/i);
+
+    // Assert incident still exists in MongoDB
+    const intactDoc = await Incident.findById(incident._id);
+    expect(intactDoc).toBeDefined();
+  });
 });
+

@@ -112,6 +112,8 @@ Thumbs.db
 *.db
 *.sqlite
 *.sqlite3
+.mongo-data/
+*/.mongo-data/
 
- Package lock files (optional - uncomment if you want to ignore them)#package-lock.json
+# Package lock files (optional - uncomment if you want to ignore them)#package-lock.json
 */package-lock.json

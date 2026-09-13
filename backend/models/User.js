@@ -23,6 +23,20 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['citizen', 'authority'],
     default: 'citizen'
+  },
+  phone: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  address: {
+    type: String,
+    trim: true,
+    default: ''
+  },
+  avatar: {
+    type: String,
+    default: ''
   }
 }, {
   timestamps: true

@@ -87,6 +87,20 @@ export const useIncidents = () => {
     }
   }, []);
 
+  const deleteIncident = useCallback(async (id: string): Promise<void> => {
+    setLoading(true);
+    setError(null);
+    try {
+      await axios.delete(`/api/incidents/${id}`);
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Failed to delete incident';
+      setError(msg);
+      throw new Error(msg);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   return {
     loading,
     error,
@@ -94,7 +108,8 @@ export const useIncidents = () => {
     getIncidents,
     getIncidentById,
     updateIncidentStatus,
-    upvoteIncident
+    upvoteIncident,
+    deleteIncident
   };
 };
 

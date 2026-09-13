@@ -110,10 +110,16 @@ const Login: React.FC = () => {
           </div>
 
           <div style={{ marginBottom: '24px' }}>
-            <label style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)', display: 'block', marginBottom: '6px' }}>
-              Password:
-            </label>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+              <label htmlFor="login-password" style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-main)', display: 'block', margin: 0 }}>
+                Password:
+              </label>
+              <Link to="/forgot-password" style={{ fontSize: '12px', color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
+                Forgot Password?
+              </Link>
+            </div>
             <input
+              id="login-password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

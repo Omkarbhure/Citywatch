@@ -30,7 +30,7 @@ describe('User Model Unit Tests', () => {
     expect(isWrong).toBe(false);
   });
 
-  it('defaults role to citizen when not explicitly specified', async () => {
+  it('defaults role to citizen and initializes empty string defaults for phone, address, and avatar', async () => {
     const user = await User.create({
       name: 'Default Role User',
       email: 'defaultrole@example.com',
@@ -38,5 +38,9 @@ describe('User Model Unit Tests', () => {
     });
 
     expect(user.role).toBe('citizen');
+    expect(user.phone).toBe('');
+    expect(user.address).toBe('');
+    expect(user.avatar).toBe('');
   });
 });
+

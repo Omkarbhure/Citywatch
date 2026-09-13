@@ -710,3 +710,40 @@ export const updatePriority = async (req, res) => {
     res.status(500).json({ message: 'Server error updating priority' });
   }
 };
+
+/**
+ * @desc    Delete/Remove an incident (Authority role only)
+ * @route   DELETE /api/incidents/:id
+ * @access  Protected (Authority only)
+ */
+export const deleteIncident = async (req, res) => {
+  try {
+    const incident = await Incident.findById(req.params.id);
+
+    if (!incident) {
+      return res.status(404).json({ message: 'Incident not found' });
+    }
+
+    const [lng, lat] = incident.location?.coordinates || [0, 0];
+    await Incident.findByIdAndDelete(req.params.id);
+
+    // Broadcast deletion to geo room, incident room, and authority broad room
+    const io = getIO();
+    if (io) {
+      const geoRoom = getGeoRoom(lat, lng);
+      io.to(geoRoom)
+        .to(`incident:${incident._id}`)
+        .to('authority:all')
+        .emit('incident:deleted', { incidentId: incident._id.toString() });
+    }
+
+    res.json({ message: 'Incident removed successfully', incidentId: incident._id });
+  } catch (error) {
+    console.error('Delete incident error:', error);
+    if (error.kind === 'ObjectId') {
+      return res.status(404).json({ message: 'Incident not found' });
+    }
+    res.status(500).json({ message: 'Server error deleting incident' });
+  }
+};
+
